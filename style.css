@@ -3,18 +3,25 @@
   background-color: rgb(49, 109, 179);
 }
 
-.dropdown {
-  background-color: rgb(49, 109, 179);
-  color: white;
-  padding: 1%;
-  padding-top: 0px;
-  border: none;
-  text-align: center;
+#character-bar {
+  height: 15vh;
+  background: rgb(49, 109, 179);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 3vh;
 }
 
-.dropdown>select, input {
-  font-size: 20px;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
+#character-bar span {
+  padding: 1%;
+  height: 80%;
+  width: 8vw;
+  display: flex;
+  justify-content: center;
+  font-size: 3vh;
+  align-items: center;
+  border-radius: 2em;
+  border: 1px solid white;
 }
 
 .characterInfo{
@@ -32,6 +39,11 @@ input[type="submit"], button{
   font-size: 18px;
   border-radius: 6px;
   font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+
+input[type="text"]{
+  height: 4vh;
+  font-size: 3vh;
 }
 
 #image{
