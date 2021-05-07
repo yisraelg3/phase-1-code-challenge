@@ -1,14 +1,15 @@
 //Global Variables and Event Listeners
 const characterBarDiv = document.querySelector('div#character-bar')
-const characterInfoDiv = document.querySelector('div#detailed-info')
-    const characterNameP = characterInfoDiv.querySelector('p#name')
-    const characterImg = characterInfoDiv.querySelector('img#image')
-    const characterCaloriesSpan = characterInfoDiv.querySelector('span#calories')
+const characterInfoDiv = document.querySelector('div.characterInfo')
+const characterDetailDiv = document.querySelector('div#detailed-info')
+    const characterNameP = characterDetailDiv.querySelector('p#name')
+    const characterImg = characterDetailDiv.querySelector('img#image')
+    const characterCaloriesSpan = characterDetailDiv.querySelector('span#calories')
 
 const calorieForm = document.querySelector('form#calories-form')
     const charIdInput = calorieForm.querySelector('input#characterId')  
 calorieForm.addEventListener('submit', (event) => {
-    newCalorieAmt = parseInt(event.target.calories.value) + parseInt(characterCaloriesSpan.textContent)
+    newCalorieAmt =  parseInt(characterCaloriesSpan.textContent) + (parseInt(event.target.calories.value) || 0)
     setCalories(newCalorieAmt, event)
     })
 
@@ -18,7 +19,17 @@ resetButton.addEventListener('click', (event) => {
     setCalories(newCalorieAmt, event)
     })
 
+//Creating Edit Name Form
+editNameForm = document.createElement('form')
+editNameForm.id = 'edit-name-form'
+editNameForm.style['padding-top'] = '20px'
+editNameForm.innerHTML = `<input type="text" placeholder="Enter New Name" id="newName"/>
+<input type="submit" value="Change Name"/>`
+characterInfoDiv.append(editNameForm)
+editNameForm.addEventListener('submit', (event) => setName(event))
+
 getAllCharacters ()
+//addEditName()
 
 //Fetch Functions
 function getAllCharacters () {
@@ -29,11 +40,12 @@ function getAllCharacters () {
     })
 }
 
-function getCalories(id) {
+function getCaloriesAndName(id) {
     fetch (`http://localhost:3000/characters/${id}`)
     .then(res => res.json())
     .then((characterObj) => {
         characterCaloriesSpan.textContent = characterObj.calories
+        characterNameP.textContent = characterObj.name
     })
 }
 
@@ -55,6 +67,27 @@ function setCalories(newCalorieAmt, event) {
     })
 }
 
+function setName(event) {
+    const newName = event.target.newName.value
+    //console.log(newName)
+    event.preventDefault()
+    if (newName){
+        fetch(`http://localhost:3000/characters/${charIdInput.value}`,
+            {method : 'PATCH',
+            headers : {"Content-Type" : "application/json"},
+            body : JSON.stringify({name : newName})
+        })
+        .then(res => res.json())
+        .then((charNameObj) => {
+            const currentSpan = characterBarDiv.querySelectorAll('span')[charNameObj.id-1]
+            characterNameP.textContent = charNameObj.name
+            currentSpan.textContent = charNameObj.name
+        })     
+    } else {
+        alert('No Name Entered!')
+    }
+}
+
 //DOM Manipulation functions
 function showCharacter(characterObj) {
     const charNameSpan = document.createElement('span')
@@ -64,11 +97,8 @@ function showCharacter(characterObj) {
 }
 
 function showCharDetails(characterObj){
-    characterNameP.textContent = characterObj.name
-    // nameEditButton = document.createElement('button')
-    // nameEditButton.value = 'Edit Name'
-    // characterNameP.append(nameEditButton)
     characterImg.src = characterObj.image
     charIdInput.value = characterObj.id
-    getCalories(characterObj.id)
+    getCaloriesAndName(characterObj.id)
 }
+
