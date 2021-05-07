@@ -45,8 +45,8 @@ function getCalories(id) {
 //calorie form function
 function addCalories(event) {
     event.preventDefault()
-    newCalorieAmt = parseInt(event.target.calories.value)
-    console.log(newCalorieAmt)
+    newCalorieAmt = parseInt(event.target.calories.value) + parseInt(characterCaloriesSpan.textContent)
+    //console.log(newCalorieAmt)
     fetch (`http://localhost:3000/characters/${event.target.characterId.value}`,
     {method: 'PATCH',
     headers : {
@@ -56,7 +56,7 @@ function addCalories(event) {
     })
     .then(res => res.json())
     .then((charObj) => {
-        characterCaloriesSpan.textContent = charObj.calories
+        characterCaloriesSpan.textContent = charObj.calories 
         calorieForm.reset()
     })
 }
