@@ -39,7 +39,7 @@ function getCalories(id) {
 
 function setCalories(newCalorieAmt, event) {
     event.preventDefault()
-    console.log(charIdInput.value)
+    //console.log(charIdInput.value)
     //console.log(newCalorieAmt)
     fetch (`http://localhost:3000/characters/${charIdInput.value}`,
     {method: 'PATCH',
@@ -65,11 +65,10 @@ function showCharacter(characterObj) {
 
 function showCharDetails(characterObj){
     characterNameP.textContent = characterObj.name
-    nameEditButton = document.createElement('button')
-    nameEditButton.value = 'Edit Name'
-    characterNameP.append(nameEditButton)
+    // nameEditButton = document.createElement('button')
+    // nameEditButton.value = 'Edit Name'
+    // characterNameP.append(nameEditButton)
     characterImg.src = characterObj.image
     charIdInput.value = characterObj.id
     getCalories(characterObj.id)
 }
-
