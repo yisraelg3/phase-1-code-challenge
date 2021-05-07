@@ -1,37 +1,32 @@
+//Global Variables and Event Listeners
 const characterBarDiv = document.querySelector('div#character-bar')
 const characterInfoDiv = document.querySelector('div#detailed-info')
     const characterNameP = characterInfoDiv.querySelector('p#name')
     const characterImg = characterInfoDiv.querySelector('img#image')
     const characterCaloriesSpan = characterInfoDiv.querySelector('span#calories')
+
 const calorieForm = document.querySelector('form#calories-form')
     const charIdInput = calorieForm.querySelector('input#characterId')  
-calorieForm.addEventListener('submit', (event) => addCalories(event))
-     
-//const newCalorieInput = calorieForm.querySelector('input#calories')
+calorieForm.addEventListener('submit', (event) => {
+    newCalorieAmt = parseInt(event.target.calories.value) + parseInt(characterCaloriesSpan.textContent)
+    setCalories(newCalorieAmt, event)
+    })
 
+const resetButton = document.querySelector('button#reset-btn')
+resetButton.addEventListener('click', (event) => {
+    newCalorieAmt = 0
+    setCalories(newCalorieAmt, event)
+    })
 
 getAllCharacters ()
 
+//Fetch Functions
 function getAllCharacters () {
     fetch ('http://localhost:3000/characters')
     .then(res => res.json())
     .then((characterArray) => {
         characterArray.forEach((characterObj) => showCharacter(characterObj))
     })
-}
-
-function showCharacter(characterObj) {
-    const charNameSpan = document.createElement('span')
-    charNameSpan.textContent = characterObj.name
-    characterBarDiv.append(charNameSpan)
-    charNameSpan.addEventListener('click', (event) => showCharDetails(characterObj))
-}
-
-function showCharDetails(characterObj){
-    characterNameP.textContent = characterObj.name
-    characterImg.src = characterObj.image
-    charIdInput.value = characterObj.id
-    getCalories(characterObj.id)
 }
 
 function getCalories(id) {
@@ -42,12 +37,11 @@ function getCalories(id) {
     })
 }
 
-//calorie form function
-function addCalories(event) {
+function setCalories(newCalorieAmt, event) {
     event.preventDefault()
-    newCalorieAmt = parseInt(event.target.calories.value) + parseInt(characterCaloriesSpan.textContent)
+    console.log(charIdInput.value)
     //console.log(newCalorieAmt)
-    fetch (`http://localhost:3000/characters/${event.target.characterId.value}`,
+    fetch (`http://localhost:3000/characters/${charIdInput.value}`,
     {method: 'PATCH',
     headers : {
         "Content-Type" : "application/json"
@@ -60,3 +54,22 @@ function addCalories(event) {
         calorieForm.reset()
     })
 }
+
+//DOM Manipulation functions
+function showCharacter(characterObj) {
+    const charNameSpan = document.createElement('span')
+    charNameSpan.textContent = characterObj.name
+    characterBarDiv.append(charNameSpan)
+    charNameSpan.addEventListener('click', (event) => showCharDetails(characterObj))
+}
+
+function showCharDetails(characterObj){
+    characterNameP.textContent = characterObj.name
+    nameEditButton = document.createElement('button')
+    nameEditButton.value = 'Edit Name'
+    characterNameP.append(nameEditButton)
+    characterImg.src = characterObj.image
+    charIdInput.value = characterObj.id
+    getCalories(characterObj.id)
+}
+
